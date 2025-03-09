@@ -8,7 +8,7 @@ import numpy as np
 
 from ODE2 import ODE2
 from Plot import Plot
-from Func import Func
+from Func import Environment
 from Diff import dydx
 
 ##### CONSTANTS #####
@@ -19,6 +19,18 @@ F0 = 2  # amplitude of external driving force
 OMEGA0 = 2  # driving frequency
 OMEGA = np.sqrt(k/m)  # angular frequency
 PHI = np.arctan(c*OMEGA0/(m*((OMEGA**2) - (OMEGA0**2))))  # phase constant
+#####################
+
+#### Environment ####
+env = Environment(
+        m = m,
+        c = c,
+        k = k,
+        F0 = F0,
+        OMEGA0 = OMEGA0,
+        OMEGA = OMEGA,
+        phi = PHI
+)
 #####################
 
 # Solving 2nd-order Ordinary Differential Equation
@@ -32,32 +44,20 @@ t = np.arange(0, 60, 1e-3)
 x, v = ode(t)
 
 # at steady state
-x_s_ = Func(
+x_s = env.newF(
         "F0*cos(OMEGA0*t-phi) / sqrt( (m**2)*((OMEGA**2)-(OMEGA0**2))**2 + (c**2)*(OMEGA0**2) )",
-        F0 = F0,
-        OMEGA0 = OMEGA0,
-        OMEGA = OMEGA,
-        m = m,
-        c = c,
-        phi = PHI
+        "x_s"
 )
-x_s = x_s_(t)
 
-v_s_ = Func(
+v_s = env.newF(
         "-F0*OMEGA*sin(OMEGA0*t-phi) / sqrt( (m**2)*((OMEGA**2)-(OMEGA0**2))**2 + (c**2)*(OMEGA0**2) )",
-        F0 = F0,
-        OMEGA0 = OMEGA0,
-        OMEGA = OMEGA,
-        m = m,
-        c = c,
-        phi = PHI
+        "v_s"
 )
-v_s = v_s_(t)
 
 
 # graph plotting for PART (A)
 f1 = [t, x]
-f2 = [t, x_s]
+f2 = [t, x_s(t)]
 Plot(
         [f1, f2],
         curve_label = ["$x(t)$", "$x_s(t)$"],
@@ -70,7 +70,7 @@ Plot(
 # graph plotting for PART (B)
 # g0 = [t, v]
 g1 = [t, dydx(x, t)]
-g2 = [t, v_s]
+g2 = [t, v_s(t)]
 Plot(
         [g1, g2],
         curve_label = ["$v(t)$", "$v_s(t)$"],
@@ -83,14 +83,10 @@ Plot(
 # express x_s as a function of OMEGA0
 # at constant time t = 2(PI)/OMEGA
 # at different value of c
-x_s0 = Func(  # amplitude of steady state displacement
-        "F0*cos(OMEGA0*t-phi) / sqrt( (m**2)*((OMEGA**2)-(OMEGA0**2))**2 + (c**2)*(OMEGA0**2) )",
-        F0 = F0,
-        OMEGA = OMEGA,
-        t = 2*np.pi/OMEGA,
-        m = m,
-        phi = PHI
-)
+env.setConstants(t = 2*np.pi/OMEGA)  # add t as constant
+env.popConstants("OMEGA0")  # remove OMEGA0 from constants list, take it as variable
+# we can reuse x_s to evaluate amplitude of steady state displacement x_s as a function of OMEGA0
+# new environment class should be created to avoid confusion and corruption of environment
 
 # preparing data for plotting
 data = []  # list of graphs' data [[graph1_x, graph1_y], [graph2_x, graph2_y], ...]
@@ -100,7 +96,7 @@ X = np.arange(0, 2*OMEGA)  # x-axis value
 for c in range(1, 75+1, 5):
     data.append([
         X,
-        x_s0(
+        x_s(
                 OMEGA0 = X,
                 c = c/10
         )

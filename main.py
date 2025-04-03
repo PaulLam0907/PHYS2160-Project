@@ -12,12 +12,12 @@ from Func import Environment
 from Diff import dydx
 
 ##### CONSTANTS #####
-m = 5  # mass
-c = 3  # damping constant > 0
-k = 75  # spring constant
-F0 = 2  # amplitude of external driving force
-OMEGA0 = 2  # driving frequency
-OMEGA = np.sqrt(k/m)  # angular frequency
+m = 5  # mass (kg)
+c = 2  # damping constant > 0 (kg/s)
+k = 75  # spring constant (N/m)  ( larger value = more elastic )
+F0 = 3  # amplitude of external driving force (N)
+OMEGA0 = 2  # driving angular frequency
+OMEGA = np.sqrt(k/m)  # angular frequency  // 2*OMEGA >> c/m
 PHI = np.arctan(c*OMEGA0/(m*((OMEGA**2) - (OMEGA0**2))))  # phase constant
 #####################
 

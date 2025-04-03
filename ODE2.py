@@ -51,7 +51,7 @@ class ODE2:
         :param kwargs:
         :return: tuple of (position, velocity)
         """
-        x, v = odeint(self.ddotX, [self.x0, self.x_dot0], t).T
+        x, v = odeint(self.ddotX, (self.x0, self.x_dot0), t).T  # .T --> transpose
         
         return x, v
         
@@ -73,5 +73,5 @@ class ODE2:
             # f is not a callable function
             ddot_x = -(self.b/self.a)*x[1] - (self.c/self.a)*x[0] + self.d*self.f/self.a
         
-        return [dot_x, ddot_x]
+        return dot_x, ddot_x
 

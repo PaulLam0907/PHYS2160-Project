@@ -23,15 +23,15 @@ class ODE2:
         ax" + bx' + cx = d * f(t)
         
         Usage:
-        x = ODE(1, 2, 3, 4, 5, 6)  # 1x" + 2x' + 3x = 4 * 1; x(0) = 5; x'(0) = 6
-        x([1])  # solving for x at t=1
+        f = ODE(1, 2, 3, 4, 5, 6)  # 1x" + 2x' + 3x = 4 * 1; x(0) = 5; x'(0) = 6
+        x, v = f([1])  # solving for f at t=1
         
         :param a: coefficient for x"
         :param b: coefficient for x'
         :param c: coefficient for x
         :param d: constant term
-        :param x0: image of x at time t = 0
-        :param x_dot0: image of x' at time t = 0
+        :param x0: initial condition for x at t = t0
+        :param x_dot0: initial condition of x' at t = t0
         :param f: (optional) a callable function of time t with d as its coefficient
         """
         self.a = a
@@ -59,19 +59,24 @@ class ODE2:
         """
         Helper function for odeint() to solve the differential equation
         
+        ax" + bx' + cx = d * f(t)
+        let v = x'  --(1)
+        av' + bv + cx = d * f(t)
+        v' = -(b/a)v - (c/a)x + (d/a) * f(t)  --(2)
+        
         :param x:
         :param t:
         :return:
         """
-        dot_x = x[1]
+        # x = x[0]
+        v = x[1]
         
         if callable(self.f):
             # f is a callable function
-            ddot_x = -(self.b/self.a)*x[1] - (self.c/self.a)*x[0] + self.d*self.f(t)/self.a
+            ddot_x = -(self.b/self.a)*v - (self.c/self.a)*x[0] + self.d*self.f(t)/self.a
         
         else:
             # f is not a callable function
-            ddot_x = -(self.b/self.a)*x[1] - (self.c/self.a)*x[0] + self.d*self.f/self.a
+            ddot_x = -(self.b/self.a)*v - (self.c/self.a)*x[0] + self.d*self.f/self.a
         
-        return dot_x, ddot_x
-
+        return v, ddot_x

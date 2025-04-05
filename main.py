@@ -1,6 +1,9 @@
 """
 main.py
 
+PHYS2160 Introductory Computational Physics 2024-25
+Project
+
 Written by S. P. Lam
 """
 
@@ -12,11 +15,11 @@ from Func import Environment
 from Diff import dydx
 
 ##### CONSTANTS #####
-m = 5  # mass (kg)
-c = 2  # damping constant > 0 (kg/s)
-k = 75  # spring constant (N/m)  ( larger value = more elastic )
-F0 = 3  # amplitude of external driving force (N)
-OMEGA0 = 2  # driving angular frequency
+m = 5  # mass  (kg)
+c = 1.75  # damping constant > 0  (kg/s)
+k = 75  # spring constant  (N/m)  ( larger value = more elastic )
+F0 = 4  # amplitude of external driving force  (N)
+OMEGA0 = 3  # driving frequency
 OMEGA = np.sqrt(k/m)  # angular frequency  // 2*OMEGA >> c/m
 PHI = np.arctan(c*OMEGA0/(m*((OMEGA**2) - (OMEGA0**2))))  # phase constant
 #####################
@@ -50,7 +53,7 @@ x_s = env.newF(
 )
 
 v_s = env.newF(
-        "-F0*OMEGA*sin(OMEGA0*t-phi) / sqrt( (m**2)*((OMEGA**2)-(OMEGA0**2))**2 + (c**2)*(OMEGA0**2) )",
+        "-F0*OMEGA0*sin(OMEGA0*t-phi) / sqrt( (m**2)*((OMEGA**2)-(OMEGA0**2))**2 + (c**2)*(OMEGA0**2) )",
         "v_s"
 )
 
@@ -81,8 +84,8 @@ Plot(
 
 
 # express x_s as a function of OMEGA0
-# at constant time t = 2(PI)/OMEGA
 # at different value of c
+# let's consider at constant time t = 2(PI)/OMEGA
 env.setConstants(t = 2*np.pi/OMEGA)  # add t as constant
 env.popConstants("OMEGA0")  # remove OMEGA0 from constants list, take it as variable
 # we can reuse x_s to evaluate amplitude of steady state displacement x_s as a function of OMEGA0
@@ -91,17 +94,17 @@ env.popConstants("OMEGA0")  # remove OMEGA0 from constants list, take it as vari
 # preparing data for plotting
 data = []  # list of graphs' data [[graph1_x, graph1_y], [graph2_x, graph2_y], ...]
 curve_label = []
-X = np.arange(0, 2*OMEGA)  # x-axis value
+X = np.arange(0, 2*OMEGA, 1e-3)  # x-axis value ( OMEGA0 )
 
-for c in range(1, 75+1, 5):
+for i in range(5, 75+1, 5):
     data.append([
         X,
         x_s(
                 OMEGA0 = X,
-                c = c/10
+                c = i/10
         )
     ])
-    curve_label.append(f"$x_s(\omega_0)$ at $c$ = {c/10}")
+    curve_label.append(f"$x_s(\omega_0)$ at $c$ = {i/10}")
 
 
 # graph plotting for PART (C)
@@ -110,5 +113,8 @@ Plot(
         curve_label = curve_label,
         title = "Amplitude of Stead-state Displacement $x_s(\omega_0)$ with varying Driving Frequency $\omega_0$ and Damping Constant $c$",
         x_label = "$\omega_0$",
-        y_label = "$x_s(\omega_0)$"
+        y_label = "$x_s(\omega_0)$",
+        x_ticks = [i*OMEGA for i in range(3)],
+        x_ticks_label = ["0", "$\omega$", "2$\omega$"],
+        grid = True
 )

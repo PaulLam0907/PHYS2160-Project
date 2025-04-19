@@ -19,6 +19,10 @@ class Environment:
     This makes the code more reusable & scalable
     by setting an environment of a particular situation with multiple functions etc.
     
+    Note that any updates to the constants can be seen by the Func() class associated to respective Environment() class
+    ie. Func() class can use the updated value of constant from its parent Environment() class
+        if the constants in parent class is being updated
+    
     Usage :
     env = Environment(
             F0 = 1,
@@ -247,6 +251,8 @@ class Func(Environment):
         
         if kwargs:
             self.setConstants(kwargs)
+            
+        self.env = env
         
     
     def __str__(self):
@@ -263,6 +269,9 @@ class Func(Environment):
         :param kwargs: user-defined variables
         :return: the image of the given function
         """
+        
+        # update values of constants from environment
+        self.constants.update(self.env.getConstants())
         
         # create variables for constants
         for const in self.constants.keys():
@@ -282,8 +291,6 @@ class Func(Environment):
         
         # return result
         return result
-
-
 
 
 """

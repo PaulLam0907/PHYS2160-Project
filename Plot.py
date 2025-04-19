@@ -323,10 +323,13 @@ class Figure:
         self.y_ticks_label = {1: [[], 11]}  # [ticks_label, font_size]
         self.grid_on = {1: False}
         
-    def plot(self, tight_layout = True):
+    def plot(self, tight_layout = True, h_space = None, w_space = None):
         """
         Plot and show the figure
         
+        :param tight_layout: let matplotlib automatically adjust graph to avoid overlapping
+        :param h_space: explicitly indicate vertical spacing between subplots
+        :param w_space: explicitly indicate horizontal spacing between subplots
         :return: None
         """
         # create figure and axes object
@@ -373,6 +376,13 @@ class Figure:
         # set tight layout
         if tight_layout:
             plt.tight_layout()
+            
+        # set subplots' spacing
+        if h_space:
+            self.figure.subplots_adjust(hspace = h_space)
+            
+        if w_space:
+            self.figure.subplots_adjust(wspace = w_space)
             
         plt.show()
         

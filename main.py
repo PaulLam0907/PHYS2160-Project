@@ -289,12 +289,12 @@ for case in ["Under-damping"]:  # dataset.keys():
     fig_a_dm.set_fig_title("Displacement of the Block $x(t)$ at Different Mass $m$")
     fig_a_dm.set_x_label("$t$")
     fig_a_dm.set_y_label("$x(t)$")
-    fig_a_dm.plot()
+    fig_a_dm.plot(h_space = 0.5)
     
     fig_b_dm.set_fig_title("Velocity of the Block $v(t)$ at Different Mass $m$")
     fig_b_dm.set_x_label("$t$")
     fig_b_dm.set_y_label("$v(t)$")
-    fig_b_dm.plot()
+    fig_b_dm.plot(h_space = 0.5)
     
     env.setConstants(m = m)
     
@@ -314,12 +314,12 @@ for case in ["Under-damping"]:  # dataset.keys():
     fig_a_dc.set_fig_title("Displacement of the Block $x(t)$ at Different Damping Constant $c$")
     fig_a_dc.set_x_label("$t$")
     fig_a_dc.set_y_label("$x(t)$")
-    fig_a_dc.plot()
+    fig_a_dc.plot(h_space = 0.5)
     
     fig_b_dc.set_fig_title("Velocity of the Block $v(t)$ at Different Damping Constant $c$")
     fig_b_dc.set_x_label("$t$")
     fig_b_dc.set_y_label("$v(t)$")
-    fig_b_dc.plot()
+    fig_b_dc.plot(h_space = 0.5)
     
     env.setConstants(c = c)
     
@@ -339,12 +339,12 @@ for case in ["Under-damping"]:  # dataset.keys():
     fig_a_dk.set_fig_title("Displacement of the Block $x(t)$ at Different Spring Constant $k$")
     fig_a_dk.set_x_label("$t$")
     fig_a_dk.set_y_label("$x(t)$")
-    fig_a_dk.plot()
+    fig_a_dk.plot(h_space = 0.5)
     
     fig_b_dk.set_fig_title("Velocity of the Block $v(t)$ at Different Spring Constant $k$")
     fig_b_dk.set_x_label("$t$")
     fig_b_dk.set_y_label("$v(t)$")
-    fig_b_dk.plot()
+    fig_b_dk.plot(h_space = 0.5)
     
     env.setConstants(k = k)
     
@@ -364,12 +364,12 @@ for case in ["Under-damping"]:  # dataset.keys():
     fig_a_dF0.set_fig_title("Displacement of the Block $x(t)$ at Different Amplitude of Driving Force $F_0$")
     fig_a_dF0.set_x_label("$t$")
     fig_a_dF0.set_y_label("$x(t)$")
-    fig_a_dF0.plot()
+    fig_a_dF0.plot(h_space = 0.5)
     
     fig_b_dF0.set_fig_title("Velocity of the Block $v(t)$ at Different Amplitude of Driving Force $F_0$")
     fig_b_dF0.set_x_label("$t$")
     fig_b_dF0.set_y_label("$v(t)$")
-    fig_b_dF0.plot()
+    fig_b_dF0.plot(h_space = 0.5)
     
     env.setConstants(F0 = F0)
     
@@ -389,12 +389,12 @@ for case in ["Under-damping"]:  # dataset.keys():
     fig_a_dOMEGA_0.set_fig_title("Displacement of the Block $x(t)$ at Different Driving Frequency $\omega_0$")
     fig_a_dOMEGA_0.set_x_label("$t$")
     fig_a_dOMEGA_0.set_y_label("$x(t)$")
-    fig_a_dOMEGA_0.plot()
+    fig_a_dOMEGA_0.plot(h_space = 0.5)
     
     fig_b_dOMEGA_0.set_fig_title("Velocity of the Block $v(t)$ at Different Driving Frequency $\omega_0$")
     fig_b_dOMEGA_0.set_x_label("$t$")
     fig_b_dOMEGA_0.set_y_label("$v(t)$")
-    fig_b_dOMEGA_0.plot()
+    fig_b_dOMEGA_0.plot(h_space = 0.5)
     
     env.setConstants(OMEGA_0 = OMEGA_0)
     

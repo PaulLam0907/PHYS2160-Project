@@ -129,6 +129,23 @@ def solve_ode2(m, c, k, F0, OMEGA_0, OMEGA, PHI, time = np.arange(0, 60, 1e-3)):
     :param time: time interval of type numpy.array()
     :return: tuple : (displacement x, velocity x')
     """
+    # get Environment() class constants
+    # assumed env = Environment() class exists
+    # this function is dedicatedly written for this project
+    _const = env.getConstants()
+    
+    # set constants
+    env.setConstants(
+            m = m,
+            c = c,
+            k = k,
+            F0 = F0,
+            OMEGA_0 = OMEGA_0,
+            OMEGA = OMEGA,
+            phi = PHI
+    )
+    
+    # compute ODE
     x0 = F0 * np.cos(PHI) + x_s()[0]  # initial condition : x(0)
     x_dot0 = -F0 * (c / (2 * m)) * np.cos(PHI) - F0 * np.sqrt(OMEGA ** 2 - (c / 2 / m) ** 2) * np.sin(-PHI) + v_s()[0]  # -F0*OMEGA_0*np.sin(-PHI) / np.sqrt( (m**2)*((OMEGA**2)-(OMEGA_0**2))**2 + (c**2)*(OMEGA_0**2) )  # initial condition : x'(0)
     ode = ODE2(m, c, k, F0, x0, x_dot0, lambda t: np.cos(OMEGA_0 * t))
@@ -136,10 +153,13 @@ def solve_ode2(m, c, k, F0, OMEGA_0, OMEGA, PHI, time = np.arange(0, 60, 1e-3)):
     # numerical result for 2nd order ODE
     x, v = ode(time)
     
+    # replace env constant value to its original
+    env.setConstants(_const)
+    
     return x, v
 
 
-# main
+##### main #####
 for case in ["Under-damping"]:  # dataset.keys():
     data = dataset[case]
     m = data["m"]
@@ -225,9 +245,6 @@ for case in ["Under-damping"]:  # dataset.keys():
         # validate data
         validate_data(case, _c, m, k, OMEGA_0)
         
-        # update constant in environment
-        env.setConstants(c = _c)
-        
         # solve ODE
         _x, _v = solve_ode2(m, _c, k, F0, OMEGA_0, OMEGA, PHI, t)
         
@@ -239,9 +256,6 @@ for case in ["Under-damping"]:  # dataset.keys():
         # solve ODE
         _x, _v = solve_ode2(m, c, _k, F0, OMEGA_0, OMEGA, PHI, t)
         
-        # update constant in environment
-        env.setConstants(k = _k)
-        
         # append to data list
         x_dk.append(_x)
         v_dk.append(_v)
@@ -250,9 +264,6 @@ for case in ["Under-damping"]:  # dataset.keys():
         # solve ODE
         _x, _v = solve_ode2(m, c, k, _F0, OMEGA_0, OMEGA, PHI, t)
         
-        # update constant in environment
-        env.setConstants(F0 = _F0)
-        
         # append to data list
         x_dF0.append(_x)
         v_dF0.append(_v)
@@ -260,9 +271,6 @@ for case in ["Under-damping"]:  # dataset.keys():
     for _OMEGA_0 in dOMEGA_0:
         # validate data
         validate_data(case, c, m, k, _OMEGA_0)
-        
-        # update constant in environment
-        env.setConstants(OMEGA_0 = _OMEGA_0)
         
         # solve ODE
         _x, _v = solve_ode2(m, c, k, F0, _OMEGA_0, OMEGA, PHI, t)
@@ -433,4 +441,4 @@ for case in ["Under-damping"]:  # dataset.keys():
     fig_c.plot(tight_layout = False)
     #######################################
     
-# end of the program
+# end of the program (main.py)

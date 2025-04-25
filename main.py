@@ -35,7 +35,7 @@ dataset = {
         "OMEGA_0" : 3,
         "dm"      : [1, 2, 3, 4],
         "dc"      : [0.1, 0.5, 1, 1.5, 2, 2.5],
-        "dk"      : [10, 30, 50, 70, 90, 110],
+        "dk"      : [50, 70, 90, 110, 130, 150],
         "dF0"     : [1, 2, 3, 4],
         "dOMEGA_0": [1, 2, 3]
     },
@@ -59,7 +59,15 @@ t = np.arange(0, 60, 1e-3)  # time interval
 #####################
 
 #### ENVIRONMENT ####
-env = Environment()
+env = Environment(
+        m = None,
+        c = None,
+        k = None,
+        F0 = None,
+        OMEGA_0 = None,
+        OMEGA = "sqrt(k/m)",  # known when k and m are given
+        phi = "arctan(c * OMEGA_0 / (m * ((OMEGA**2) - (OMEGA_0**2)) ))"  # known when c , OMEGA_0 , m , k are given
+)
 
 # function at steady state of the block
 x_s = env.newF(
@@ -114,7 +122,7 @@ def validate_data(case, c, m, k, OMEGA_0):
     return True
 
 
-def solve_ode2(m, c, k, F0, OMEGA_0, OMEGA, PHI, time = np.arange(0, 60, 1e-3)):
+def solve_ode2(m, c, k, F0, OMEGA_0, time = np.arange(0, 60, 1e-3)):
     """
     Solving 2nd-order Ordinary Differential Equation
     mx" + cx' + kx = F0*cos(OMEGA_0 * t)
@@ -124,8 +132,8 @@ def solve_ode2(m, c, k, F0, OMEGA_0, OMEGA, PHI, time = np.arange(0, 60, 1e-3)):
     :param k: spring constant  (N/m)
     :param F0: amplitude of external driving force  (N)
     :param OMEGA_0: driving frequency
-    :param OMEGA: angular frequency
-    :param PHI: phase constant
+    # :param OMEGA: angular frequency
+    # :param PHI: phase constant
     :param time: time interval of type numpy.array()
     :return: tuple : (displacement x, velocity x')
     """
@@ -141,8 +149,8 @@ def solve_ode2(m, c, k, F0, OMEGA_0, OMEGA, PHI, time = np.arange(0, 60, 1e-3)):
             k = k,
             F0 = F0,
             OMEGA_0 = OMEGA_0,
-            OMEGA = OMEGA,
-            phi = PHI
+            # OMEGA = OMEGA,
+            # phi = PHI
     )
     
     # compute ODE
@@ -181,13 +189,13 @@ for case in ["Under-damping"]:  # dataset.keys():
             k = k,
             F0 = F0,
             OMEGA_0 = OMEGA_0,
-            OMEGA = np.sqrt(k/m),
-            phi = np.arctan(c*OMEGA_0/(m*((OMEGA**2) - (OMEGA_0**2))))
+            # OMEGA = "sqrt(k/m)",
+            # phi = "arctan(c * OMEGA_0 / (m * ((OMEGA**2) - (OMEGA_0**2)) ))"
     )
     
     # Solving 2nd-order Ordinary Differential Equation
     # mx" + cx' + kx = F0*cos(OMEGA_0 * t)
-    x, v = solve_ode2(m, c, k, F0, OMEGA_0, OMEGA, PHI, t)
+    x, v = solve_ode2(m, c, k, F0, OMEGA_0, t)
     
     ##### graph plotting for PART (A) #####
     f1 = [t, x]
@@ -235,7 +243,7 @@ for case in ["Under-damping"]:  # dataset.keys():
         validate_data(case, c, _m, k, OMEGA_0)
         
         # solve ODE
-        _x, _v = solve_ode2(_m, c, k, F0, OMEGA_0, OMEGA, PHI, t)
+        _x, _v = solve_ode2(_m, c, k, F0, OMEGA_0, t)
         
         # append to data list
         x_dm.append(_x)
@@ -246,15 +254,18 @@ for case in ["Under-damping"]:  # dataset.keys():
         validate_data(case, _c, m, k, OMEGA_0)
         
         # solve ODE
-        _x, _v = solve_ode2(m, _c, k, F0, OMEGA_0, OMEGA, PHI, t)
+        _x, _v = solve_ode2(m, _c, k, F0, OMEGA_0, t)
         
         # append to data list
         x_dc.append(_x)
         v_dc.append(_v)
         
     for _k in dk:
+        # validate data
+        validate_data(case, c, m, _k, OMEGA_0)
+        
         # solve ODE
-        _x, _v = solve_ode2(m, c, _k, F0, OMEGA_0, OMEGA, PHI, t)
+        _x, _v = solve_ode2(m, c, _k, F0, OMEGA_0, t)
         
         # append to data list
         x_dk.append(_x)
@@ -262,7 +273,7 @@ for case in ["Under-damping"]:  # dataset.keys():
         
     for _F0 in dF0:
         # solve ODE
-        _x, _v = solve_ode2(m, c, k, _F0, OMEGA_0, OMEGA, PHI, t)
+        _x, _v = solve_ode2(m, c, k, _F0, OMEGA_0, t)
         
         # append to data list
         x_dF0.append(_x)
@@ -273,7 +284,7 @@ for case in ["Under-damping"]:  # dataset.keys():
         validate_data(case, c, m, k, _OMEGA_0)
         
         # solve ODE
-        _x, _v = solve_ode2(m, c, k, F0, _OMEGA_0, OMEGA, PHI, t)
+        _x, _v = solve_ode2(m, c, k, F0, _OMEGA_0, t)
         
         # append to data list
         x_dOMEGA_0.append(_x)

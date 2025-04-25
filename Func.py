@@ -23,6 +23,10 @@ class Environment:
     ie. Func() class can use the updated value of constant from its parent Environment() class
         if the constants in parent class is being updated
     
+    If some constants depend on other constants, simply pass a string instead
+    ie. env.setConstants(a = 1, b = "2*a + 1")
+    Note that the value of constants is evaluated only when Func() is being called
+    
     Usage :
     env = Environment(
             F0 = 1,
@@ -62,6 +66,17 @@ class Environment:
             g = 9.81  # new constant g = 9.81
     )
     print(env2.getConstants())  # get constants of env2
+    
+    
+    ##### Constant that depends on other constants #####
+    env3 = Environment(a = 1, b = "2*a")  # Environment with constant a = 1 and b = 2a, pass "2*a" as string
+    # note that b = 2a should be defined only after a is defined
+    # ie. first define "a" in Environment() , then define b = 2a
+    f = env3.newF("a + b", "f")  # define function which return a + b
+    print(f())  # 3
+    
+    env3.setConstants(a = 2)  # set a = 2 => b = 2*a = 4
+    print(f())  # 6
     """
     
     def __init__(self, constants = None, name = None, **kwargs):
@@ -89,16 +104,20 @@ class Environment:
     def setConstants(self, constants = None, **kwargs):
         """
         Define constants and its value
+        If you wish to define constant that depends on other constants,
+        pass the expression as string instead (see example below).
+        Note that "independent constant" should be defined before related "dependent constant" is defined
         
         Usage :
         env = Environment()  # define environment
         env.setConstant(a = 1, b = 2)  # create new constant a = 1, b = 2
         env.setConstant(a = 3)  # update value of existing constant a to be 3
+        env.setConstant(c = "2*a + 3*b")  # create new constant c = 2a + 3b which depends on a and b
         
         const = {
             "a": 4,
             "b": 5,
-            "c": 6
+            "c": "2*a + 3*b"
         }
         env.setConstant(const)  # update / add constants from dict
         
